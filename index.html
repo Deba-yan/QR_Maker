@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QR Maker</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <div class="background"></div>
+
+    <div class="container">
+
+        <div class="logo">
+            <div class="logo-box">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <h1>QR Maker</h1>
+        </div>
+
+        <p class="subtitle">
+            Create and download your QR code instantly
+        </p>
+
+        <div class="input-box">
+
+            <input
+                type="text"
+                id="link"
+                placeholder="Paste your link here..."
+            >
+
+            <button onclick="generateQR()">
+                Generate QR
+            </button>
+
+        </div>
+
+        <div id="result">
+
+            <div class="qr-container">
+                <img id="qrImage" alt="Generated QR Code">
+            </div>
+
+            <a id="downloadBtn" download="my-qrcode.png">
+                ↓ Download QR Code
+            </a>
+
+        </div>
+
+        <p class="footer">
+                 Created by Debayan Kundu •
+         <a href="YOUR_GITHUB_REPOSITORY_LINK" target="_blank">GitHub</a>
+        </p>
+
+    </div>
+
+
+<script>
+
+function generateQR() {
+
+    let link = document.getElementById("link").value;
+
+    if (link.trim() === "") {
+        alert("Please enter a link!");
+        return;
+    }
+
+    fetch("/generate", {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+
+        body: "link=" + encodeURIComponent(link)
+    })
+
+    .then(response => response.blob())
+
+    .then(blob => {
+
+        let imageURL = URL.createObjectURL(blob);
+
+        document.getElementById("qrImage").src = imageURL;
+
+        document.getElementById("downloadBtn").href = imageURL;
+
+        document.getElementById("result").style.display = "block";
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
